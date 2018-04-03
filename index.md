@@ -76,6 +76,102 @@ This guide is composed of three parts, each building on the previous part and ma
 }
 ```
 
+* Set `outDir` in core/tsconfig.json
+
+```diff
+{
+    "compilerOptions": {
+        ...
+-       // "outDir": "./",
++       "outDir": "./dist",
+        ...
+    }
+}
+```
+
+* Set `rootDir` in core/tsonfig.json
+
+```diff
+{
+    "compilerOptions": {
+        ...
+-       // "rootDir": "./",
++       "rootDir": "./src",
+        ...
+    }
+}
+```
+
+* Set `moduleResolution` to `node` in core/tsconfig.json
+
+```diff
+{
+    "compilerOptions": {
+        ...
+-       // "moduleResolution": "node",
++       "moduleResolution": "node",
+        ...
+    }
+}
+```
+
+* Set `skipLibCheck` to `true`
+
+```diff
+{
+    "compilerOptions": {
+        ...
++       "skipLibCheck": true,
+        ...
+    }
+}
+```
+
+* Add the `IExampleService` interface in core/src/IExampleService.ts
+
+``` TypeScript
+export interface IExampleService {
+    doExampleWork(input: string): Uint8Array;
+}
+```
+
+* Implement `IExampleService` with `BasicExampleService` in core/src/BasicExampleService.ts
+
+``` TypeScript
+import { IExampleService } from "./IExampleService";
+
+export class BasicExampleService implements IExampleService {
+    doExampleWork(input: string): Uint8Array {
+        let result: Uint8Array = new Uint8Array(input.length);
+        for (let i: number = 0; i < input.length; i++) {
+            result[i] = input.charCodeAt(i);
+        }
+
+        return result;
+    }
+}
+```
+
+* Export `IExampleService` and `BasicExampleService` in core/src/index.ts for easier consumption
+
+``` TypeScript
+export * from "./IExampleService";
+export * from "./BasicExampleService";
+```
+
+* Specify "dist/index.js" (the output from building src/index.ts) as the main entrypoint in core/package.json
+
+``` diff
+{
+    ...
+    "version": "1.0.0",
+-   "main": "index.js",
++   "main": "dist/index.js",
+    "author": ...
+    ...
+}
+```
+
 ### Repository Notes
 
 * Each commit message describes the command that was run or the change that was made.
