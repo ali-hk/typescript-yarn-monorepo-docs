@@ -40,6 +40,7 @@ This guide is composed of three parts, each building on the previous part and ma
 {
     "compilerOptions": {
         ...
+-       // "lib": [],
 +       "lib": [
 +           "es6",
 +           "dom"
@@ -55,6 +56,7 @@ This guide is composed of three parts, each building on the previous part and ma
 {
     "compilerOptions": {
         ...
+-       // "sourceMap": true,
 +       "sourceMap": true,
         ...
     }
@@ -67,6 +69,10 @@ This guide is composed of three parts, each building on the previous part and ma
 {
     "compilerOptions": {
         ...
+-       "noUnusedLocals": true,
+-       "noUnusedParameters": true,
+-       "noImplicitReturns": true,
+-       "noFallthroughCasesInSwitch": true,
 +       "noUnusedLocals": true,
 +       "noUnusedParameters": true,
 +       "noImplicitReturns": true,
@@ -115,7 +121,7 @@ This guide is composed of three parts, each building on the previous part and ma
 }
 ```
 
-* Set `skipLibCheck` to `true`
+* Set `skipLibCheck` to `true` in core/tsconfig.json
 
 ```diff
 {
@@ -170,6 +176,63 @@ export * from "./BasicExampleService";
     "author": ...
     ...
 }
+```
+
+* Set `declaration` to `true` in core/tsconfig.json
+
+```diff
+{
+    "compilerOptions": {
+        ...
+-       // "declaration": true
++       "declaration": true,
+        ...
+    }
+}
+```
+
+* Specify "dist/index" (the location of index.d.ts, the compiled declaration) as the entrypoint for typings in core/package.json
+
+``` diff
+{
+    ...
+    "main": "index.js",
++   "typings": "dist/index",
+    "author": ...
+    ...
+}
+```
+
+* add .npmrc to core directory to prevent files in src/ from being included in the npm package
+  * This is necessary to avoid compilation issues for consumers of the package
+
+``` diff
+src/
+```
+
+* At this point you can run `tsc` in the core directory and the compilation should succeed. You're directory structure will like this:
+
+``` text
+-root/
+    -packages/
+        -core/
+            -src/
+                -IExampleService.ts
+                -BasicExampleService.ts
+            -dist/
+                -BasicExampleService.d.ts
+                -BasicExampleService.js
+                -BasicExampleService.js.map
+                -IExampleService.d.ts
+                -IExampleService.js
+                -IExampleService.js.map
+                -index.d.ts
+                -index.js
+                -index.js.map
+            -node_modules/
+            -.npmrc
+            -package.json
+            -tsconfig.json
 ```
 
 ### Repository Notes
